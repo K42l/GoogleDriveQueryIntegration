@@ -19,6 +19,11 @@ namespace Google.Drive.Query.Integration
             service = ConnectionServiceAccount.CreateConnection(applicationName, credentialFilePath, emailServiceAccount, password);
         }
 
+        public Integration(DriveService service)
+        {
+            this.service = service;
+        }   
+
         public async Task<ActionResult<GoogleFile>> CreateFolderAsync(string driveId, string folderName, string? parentId = null)
         {
             try
