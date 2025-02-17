@@ -39,7 +39,7 @@ namespace Google.Drive.Query.Integration.Business
 		/// <param name="trashed">Include trashed files; Default = false</param> 
 		/// <param name="fields">Specify the response fields</param> 
 		/// <returns>The FilesResource.ListRequest with the query.</returns>
-		[Obsolete("This method is deprecated. Use the ListRequest class for a more complete way of listing files")]
+		[Obsolete("This method is deprecated. Use the CustomListRequest class for a more complete way of listing files")]
 		public static FilesResource.ListRequest SetQuerysRequest(FilesResource.ListRequest listRequest, 
                                                           string driveId,
                                                           string? requestType = null,  
