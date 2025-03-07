@@ -1,11 +1,9 @@
 ﻿using Google.Apis.Services;
 using Google.Drive.Query.Integration.Query.File;
 using Google.Drive.Query.Integration.Util;
-using Microsoft.AspNetCore.Http;
-using System;
 using System.Collections;
+using System.ComponentModel.Design;
 using System.Reflection;
-using System.Xml.Linq;
 
 namespace Google.Drive.Query.Integration.Request
 {
@@ -42,7 +40,13 @@ namespace Google.Drive.Query.Integration.Request
             set
             {
                 if (value == null)
+                {
                     this.fields = "nextPageToken, files(id, name, size, mimeType, parents, createdTime, modifiedTime)";
+                }
+                else
+                {
+                    this.fields = value;
+                }  
             }
         }
         private string? fields;
@@ -124,7 +128,7 @@ namespace Google.Drive.Query.Integration.Request
                                 var encapsulateWithNext = (propType.GetProperty("EncapsulateWithNext").GetValue(objectArray[j]) as bool?).Value;
                                 var createdTime = (propType.GetProperty("CreatedTime").GetValue(objectArray[j]) as DateTime?).Value;
                                 
-                                string key = null;
+                                string? key = null;
                                 if (propType.GetProperty("Key") != null)
                                     key = (string?)propType.GetProperty("Key").GetValue(objectArray[j]);
 
@@ -174,10 +178,10 @@ namespace Google.Drive.Query.Integration.Request
 
         private class ValidValue
         {
-            public string Name { get; set; }
-            public object Value { get; set; }
+            public required string Name { get; set; }
+            public required object Value { get; set; }
             public string? Key { get; set; }
-            public string Operator { get; set; }
+            public required string Operator { get; set; }
             public string? AndOr { get; set; }
             public bool EncapsulateWithNext { get; set; }
             public bool NegateSearchQuery { get; set; }
