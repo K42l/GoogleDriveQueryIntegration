@@ -5,11 +5,11 @@ using Google.Drive.Query.Integration;
 using Google.Drive.Query.Integration.Interface;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Google.Drive.Backup.Util
+namespace Google.Drive.Query.Integration
 {
     public static class Credential
     {
-        public static IServiceCollection AddIntegration(this IServiceCollection services, string applicationName) 
+        public static IServiceCollection AddIntegration(this IServiceCollection services, string applicationName)
         {
             GoogleCredential credential = GoogleCredential.GetApplicationDefault()
                     .CreateScoped(DriveService.Scope.Drive);
