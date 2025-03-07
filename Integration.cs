@@ -86,7 +86,7 @@ namespace Google.Drive.Query.Integration
                 if (response.Status != Google.Apis.Upload.UploadStatus.Completed)
                     throw response.Exception;
 
-                return request.ResponseBody;
+                return new OkObjectResult(request.ResponseBody);
             }
             catch (GoogleApiException e)
             {
@@ -102,6 +102,12 @@ namespace Google.Drive.Query.Integration
                 request.DriveId = driveId;
                 request.Fields = fields;
                 request.Terms = terms;
+                request.SupportsAllDrives = true;
+                if (driveId != null)
+                {
+                    request.IncludeItemsFromAllDrives = true;
+                    request.Corpora = "drive";
+                }
 
                 var result = new List<GoogleFile>();
                 string? pageToken = null;
@@ -123,15 +129,23 @@ namespace Google.Drive.Query.Integration
             }
         }
 
-        public async Task<ActionResult<List<GoogleFile>>> ListAsync(string? query, string? fields = null, string? driveId = null)
+        public async Task<ActionResult<List<GoogleFile>>> ListAsync(string? query = null, string? fields = null, string? driveId = null)
         {
             try
             {
                 var request = service.Files.List();
                 request.DriveId = driveId;
+                if (fields == null)
+                    fields = "nextPageToken, files(id, name, size, mimeType, parents, createdTime, modifiedTime)";
                 request.Fields = fields;
                 request.Q = query;
-
+                request.SupportsAllDrives = true;
+                if(driveId != null)
+                {
+                    request.IncludeItemsFromAllDrives = true;
+                    request.Corpora = "drive";
+                }
+                    
                 var result = new List<GoogleFile>();
                 string? pageToken = null;
                 do
@@ -208,12 +222,15 @@ namespace Google.Drive.Query.Integration
             }
         }
 
-        public async Task<ActionResult<GoogleFile>> GetFileInfoAsync(string fileId)
+        public async Task<ActionResult<GoogleFile>> GetFileInfoAsync(string fileId, string? fields = null)
         {
             try
             {
                 var request = service.Files.Get(fileId);
                 request.SupportsAllDrives = true;
+                if (fields == null)
+                    fields = "id, name, size, mimeType, parents, createdTime, modifiedTime";
+                request.Fields = fields;
 
                 return new OkObjectResult(await request.ExecuteAsync());
             }

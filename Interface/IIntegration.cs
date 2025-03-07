@@ -49,7 +49,7 @@ namespace Google.Drive.Query.Integration.Interface
         /// <param name="fields">Files that contains the string on their names</param>
         /// <returns>
         /// </returns>
-        Task<ActionResult<List<GoogleFile>>> ListAsync(string? query, string? fields = null, string? driveId = null);
+        Task<ActionResult<List<GoogleFile>>> ListAsync(string? query = null, string? fields = null, string? driveId = null);
 
         /// <summary>
         /// Search all drives that are been shared with the service account being used by the application
@@ -73,6 +73,6 @@ namespace Google.Drive.Query.Integration.Interface
         /// </summary>
         /// <param name="fileId"></param>
         /// <returns></returns>
-        Task<ActionResult<GoogleFile>> GetFileInfoAsync(string fileId);
+        Task<ActionResult<GoogleFile>> GetFileInfoAsync(string fileId, string? fields = null);
     }
 }
