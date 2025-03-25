@@ -41,7 +41,7 @@ namespace Google.Drive.Query.Integration.Request
             {
                 if (value == null)
                 {
-                    this.fields = "nextPageToken, files(id, name, size, mimeType, parents, createdTime, modifiedTime)";
+                    this.fields = "nextPageToken, files(id, name, size, mimeType, parents, createdTime, modifiedTime, trashed, version, driveId)";
                 }
                 else
                 {

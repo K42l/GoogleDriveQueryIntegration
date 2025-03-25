@@ -99,12 +99,12 @@ namespace Google.Drive.Query.Integration
             try
             {
                 CustomListRequest request = new(service);
-                request.DriveId = driveId;
                 request.Fields = fields;
                 request.Terms = terms;
                 request.SupportsAllDrives = true;
                 if (driveId != null)
                 {
+                    request.DriveId = driveId;
                     request.IncludeItemsFromAllDrives = true;
                     request.Corpora = "drive";
                 }
@@ -134,14 +134,14 @@ namespace Google.Drive.Query.Integration
             try
             {
                 var request = service.Files.List();
-                request.DriveId = driveId;
                 if (fields == null)
-                    fields = "nextPageToken, files(id, name, size, mimeType, parents, createdTime, modifiedTime)";
+                    fields = "nextPageToken, files(id, name, size, mimeType, parents, createdTime, modifiedTime, trashed, version, driveId)";
                 request.Fields = fields;
                 request.Q = query;
                 request.SupportsAllDrives = true;
                 if(driveId != null)
                 {
+                    request.DriveId = driveId;
                     request.IncludeItemsFromAllDrives = true;
                     request.Corpora = "drive";
                 }
