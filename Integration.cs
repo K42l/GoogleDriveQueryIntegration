@@ -8,6 +8,7 @@ using Google.Drive.Query.Integration.Interface;
 using Google.Drive.Query.Integration.Request;
 using Google.Drive.Query.Integration.Query.File;
 using Microsoft.AspNetCore.Mvc;
+using static Google.Apis.Drive.v3.DriveBaseServiceRequest<TResponse>;
 
 namespace Google.Drive.Query.Integration
 {
@@ -194,11 +195,13 @@ namespace Google.Drive.Query.Integration
             }
         }
 
-        public async Task<ActionResult<byte[]>> DownloadFileAsync(string fileId)
+        public async Task<ActionResult<byte[]>> DownloadFileAsync(string fileId, bool acknowledgeAbuse = false, AltEnum altEnum = AltEnum.Media)
         {
             try { 
                 var request = service.Files.Get(fileId);
                 request.SupportsAllDrives = true;
+                request.AcknowledgeAbuse = acknowledgeAbuse;
+                request.Alt = altEnum;
 
                 using (MemoryStream stream = new MemoryStream())
                 {
@@ -219,6 +222,100 @@ namespace Google.Drive.Query.Integration
             catch (GoogleApiException e)
             {
                 return new StatusCodeResult((int)e.HttpStatusCode);
+            }
+        }
+
+        public async Task<ActionResult> DownloadWriteFileAsync(string fileId, string fileNamePath, bool acknowledgeAbuse = false, AltEnum altEnum = AltEnum.Media)
+        {
+            try
+            {
+                var path = fileNamePath.Substring(0, fileNamePath.LastIndexOf("\\"));
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                var request = service.Files.Get(fileId);
+                request.SupportsAllDrives = true;
+                request.AcknowledgeAbuse = acknowledgeAbuse;
+                request.Alt = altEnum;
+
+                using (FileStream stream = new(fileNamePath, FileMode.Create))
+                {
+                    request.MediaDownloader.ProgressChanged +=
+                        progress =>
+                        {
+                            if (progress.Status == DownloadStatus.Failed)
+                            {
+                                throw new Exception("Download failed.");
+                            }
+                        };
+                    await request.DownloadAsync(stream);
+                    stream.Flush();
+                    return new OkResult();
+                }
+            }
+            catch (GoogleApiException e)
+            {
+                return new ObjectResult(e);
+            }
+        }
+
+        public async Task<ActionResult<byte[]>> ExportFileAsync(string fileId, string mimeType)
+        {
+            try
+            {
+                var request = service.Files.Export(fileId, mimeType);
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    request.MediaDownloader.ProgressChanged +=
+                        progress =>
+                        {
+                            if (progress.Status == DownloadStatus.Failed)
+                            {
+                                throw new Exception("Download failed.");
+                            }
+                        };
+                    await request.DownloadAsync(stream);
+
+                    var fileBytes = stream.ToArray();
+                    return new OkObjectResult(fileBytes);
+                }
+            }
+            catch (GoogleApiException e)
+            {
+                return new StatusCodeResult((int)e.HttpStatusCode);
+            }
+        }
+
+        public async Task<ActionResult> ExportWriteFileAsync(string fileId, string mimeType, string fileNamePath)
+        {
+            try
+            {
+                var path = fileNamePath.Substring(0, fileNamePath.LastIndexOf("\\"));
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                var request = service.Files.Export(fileId, mimeType);
+
+                using (FileStream stream = new FileStream(fileNamePath, FileMode.Create))
+                {
+                    request.MediaDownloader.ProgressChanged +=
+                        progress =>
+                        {
+                            if (progress.Status == DownloadStatus.Failed)
+                            {
+                                throw new Exception("Download failed.");
+                            }
+                        };
+                    await request.DownloadAsync(stream);
+
+                    stream.Flush();
+                    return new OkResult();
+                }
+            }
+            catch (GoogleApiException e)
+            {
+                return new ObjectResult(e);
             }
         }
 
