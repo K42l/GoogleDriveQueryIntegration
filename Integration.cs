@@ -259,7 +259,7 @@ namespace Google.Drive.Query.Integration
             }
         }
 
-        public async Task<ActionResult<byte[]>> ExportFileAsync(string fileId, string mimeType)
+        public async Task<ActionResult<byte[]>> ExportFileAsync(string fileId, string mimeType, bool acknowledgeAbuse = false, AltEnum altEnum = AltEnum.Media)
         {
             try
             {
@@ -287,7 +287,7 @@ namespace Google.Drive.Query.Integration
             }
         }
 
-        public async Task<ActionResult> ExportWriteFileAsync(string fileId, string mimeType, string fileNamePath)
+        public async Task<ActionResult> ExportWriteFileAsync(string fileId, string mimeType, string fileNamePath, bool acknowledgeAbuse = false, AltEnum altEnum = AltEnum.Media)
         {
             try
             {
