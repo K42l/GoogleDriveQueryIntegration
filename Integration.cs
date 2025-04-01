@@ -8,7 +8,7 @@ using Google.Drive.Query.Integration.Interface;
 using Google.Drive.Query.Integration.Request;
 using Google.Drive.Query.Integration.Query.File;
 using Microsoft.AspNetCore.Mvc;
-using static Google.Apis.Drive.v3.DriveBaseServiceRequest<TResponse>;
+using static Google.Apis.Drive.v3.DriveBaseServiceRequest<Google.Apis.Drive.v3.Data.File>;
 
 namespace Google.Drive.Query.Integration
 {
