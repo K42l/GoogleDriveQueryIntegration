@@ -53,12 +53,27 @@ namespace Google.Drive.Query.Integration.Interface
         Task<ActionResult<List<GoogleFile>>> ListAsync(string? query = null, string? fields = null, string? driveId = null);
 
         /// <summary>
-        /// Search all drives that are been shared with the service account being used by the application
+        /// Search all Team Drives that are been shared with the service account being used by the application
         /// </summary>
         /// <returns>
         /// All the drives details
         /// </returns>
         Task<ActionResult<TeamDriveList>> GetAllTeamDrivesAsync();
+
+        /// <summary>
+        /// Search all drives that are been shared with the service account being used by the application
+        /// </summary>
+        /// <returns>
+        /// All the drives details
+        /// </returns>
+        Task<ActionResult<DriveList>> GetAllSharedDrivesAsync();
+
+        /// <summary>
+        /// Get a shared drive by the id.
+        /// </summary>
+        /// <param name="driveId"></param>
+        /// <returns></returns>
+        Task<ActionResult<Apis.Drive.v3.Data.Drive>> GetSharedDriveAsync(string driveId);
 
         /// <summary>
         /// Download the specified file from the drive

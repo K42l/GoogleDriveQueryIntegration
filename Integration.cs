@@ -167,7 +167,7 @@ namespace Google.Drive.Query.Integration
             }
         }
 
-        public async Task<ActionResult<DriveList>> GetSharedDrivesAsync()
+        public async Task<ActionResult<DriveList>> GetAllSharedDrivesAsync()
         {
             try
             {
@@ -187,6 +187,19 @@ namespace Google.Drive.Query.Integration
             {
                 var request = service.Teamdrives.List();
                 request.PageSize = 100;
+                return new OkObjectResult(await request.ExecuteAsync());
+            }
+            catch (GoogleApiException e)
+            {
+                return new StatusCodeResult((int)e.HttpStatusCode);
+            }
+        }
+
+        public async Task<ActionResult<Apis.Drive.v3.Data.Drive>> GetSharedDriveAsync(string driveId)
+        {
+            try
+            {
+                var request = service.Drives.Get(driveId);
                 return new OkObjectResult(await request.ExecuteAsync());
             }
             catch (GoogleApiException e)
